@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Git hook for Golang project.
+
+# Is it a valid Go environment?
+if [[ -z "$(type -p go)" ]]; then
+	exit 0
+fi
+
+check_exit() {
+    if [ $? -eq 1 ]; then
+        printf "checks failed on $1\n"
+        exit 1
+    fi
+}
+
+list_pkg() {
+    echo -e "$(go list ./... | grep -v /vendor/)"
+}
+
+# Vet examines Go source code and reports suspicious constructs.
+go vet $(list_pkg)
+check_exit "vet"
+
+# Test launches all unit tests.
+go test $(list_pkg)
+check_exit "test"
+
+# Linter for Go source code.
+if [[ -n "$(type -p golint)" ]]; then
+    golint $(list_pkg)
+    check_exit "lint"
+fi
