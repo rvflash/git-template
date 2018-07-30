@@ -7,7 +7,7 @@ More information in the documentation of [Git template directory](https://git-sc
 This project provides a directory to use as `git` template directory to simplify the workflow.
 Usefull to create global hooks!
 
-> For now, only Golang code as a template directory with a `pre-commit` hook inside.
+> For now, only Golang code has a template directory with a `pre-commit` hook inside.
 
 
 ## Installation
@@ -18,7 +18,7 @@ $ git clone https://github.com/rvflash/git-template.git ~/git-template
 
 ## Quick start
 
-To use it for all yours future reposotories, edit the `~/.gitconfig` and add this section:
+To use it for all your future repositories, edit the `~/.gitconfig` and add this section:
 
 ```bash
 [init]
