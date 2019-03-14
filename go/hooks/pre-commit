@@ -18,31 +18,39 @@ list_pkg() {
     echo -e "$(go list ./... | grep -v /vendor/)"
 }
 
-# Vet examines Go source code and reports suspicious constructs.
-go vet $(list_pkg)
-check_exit "vet"
-
-# Test launches all unit tests.
-go test $(list_pkg)
-check_exit "test"
-
-# Formats the Go source code.
-gofmt -e -d -s .
-check_exit "fmt"
-
-# Linters for Go source code.
-# > golint
-if [[ -n "$(type -p golint)" ]]; then
-    golint $(list_pkg)
-    check_exit "lint"
+# Uses a linters aggregator to improve lints and keeps a reasonable response time.
+if [[ -n "$(type -p golangci-lint)" ]]; then
+    golangci-lint run --enable-all
+    check_exit "golangci-lint"
 else
-    echo "golint skipped. To install it: go get -u golang.org/x/lint/golint"
-fi
+    # degraded mode
+    echo -e "use golangci-lint to improve performance.\nto install it: https://github.com/golangci/golangci-lint"
 
-# > goimports
-if [[ -n "$(type -p goimports)" ]]; then
-    goimports -e -d .
-    check_exit "imports"
-else
-    echo "goimports skipped. To install it: go get golang.org/x/tools/cmd/goimports"
+    # Vet examines Go source code and reports suspicious constructs.
+    go vet $(list_pkg)
+    check_exit "vet"
+
+    # Test launches all unit tests.
+    go test $(list_pkg)
+    check_exit "test"
+
+    # Formats the Go source code.
+    gofmt -e -d -s .
+    check_exit "fmt"
+
+    # Linters for Go source code.
+    # > golint
+    if [[ -n "$(type -p golint)" ]]; then
+        golint $(list_pkg)
+        check_exit "lint"
+    else
+        echo "golint skipped. To install it: go get -u golang.org/x/lint/golint"
+    fi
+    # > goimports
+    if [[ -n "$(type -p goimports)" ]]; then
+        goimports -e -d .
+        check_exit "imports"
+    else
+        echo "goimports skipped. To install it: go get golang.org/x/tools/cmd/goimports"
+    fi
 fi
