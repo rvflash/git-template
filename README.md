@@ -13,7 +13,7 @@ Usefull to create global hooks!
 ## Installation
 
 ```bash
-$ git clone https://github.com/rvflash/git-template.git ~/git-template
+$ git clone https://github.com/rvflash/git-template.git ~/.git-template
 ```
 
 ## Quick start
@@ -33,4 +33,7 @@ $ git init --template="~/.git-template/go"
 
 ### Repository with Go code
 
-Exposes a pre-commit hook that launches all the tests, `golint` and `govet`. If one of them failed, the commit is aborded.
+Exposes a pre-commit hook that launches all the tests, `golint`, `goimports`, `gofmt` and `govet`.
+If one of them failed, the commit is aborded.
+
+In order to use more linters without degrading performance, if available, `golangci-lint` is used.
