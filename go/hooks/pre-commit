@@ -26,8 +26,23 @@ check_exit "vet"
 go test $(list_pkg)
 check_exit "test"
 
-# Linter for Go source code.
+# Formats the Go source code.
+gofmt -e -d -s .
+check_exit "fmt"
+
+# Linters for Go source code.
+# > golint
 if [[ -n "$(type -p golint)" ]]; then
     golint $(list_pkg)
     check_exit "lint"
+else
+    echo "golint skipped. To install it: go get -u golang.org/x/lint/golint"
+fi
+
+# > goimports
+if [[ -n "$(type -p goimports)" ]]; then
+    goimports -e -d .
+    check_exit "imports"
+else
+    echo "goimports skipped. To install it: go get golang.org/x/tools/cmd/goimports"
 fi
